@@ -4,17 +4,17 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:10064",
-      "sslPort": 44379
+      "applicationUrl": "http://localhost:55604",
+      "sslPort": 44391
     }
   },
   "profiles": {
-    "RateMatchServices.NewsService": {
+    "NewsService": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7184;http://localhost:5175",
+      "applicationUrl": "https://localhost:7228;http://localhost:5259",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
