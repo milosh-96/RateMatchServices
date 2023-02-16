@@ -5,17 +5,17 @@ namespace NewsService.Services
 {
     public class RssReadingService : IRssReadingService
     {
-        private string? rssFeedUrl;
+        private SyndicationFeed? rssFeed;
 
-        public void SetRssFeed(string url)
+        public void SetRssFeed(SyndicationFeed feed)
         {
-            rssFeedUrl = url; 
+            rssFeed = feed; 
         }
         public IEnumerable<SyndicationItem> GetAll()
         {
-            if (this.rssFeedUrl != null)
+            if (this.rssFeed != null)
             {
-                using var reader = XmlReader.Create(this.rssFeedUrl);
+                using var reader = XmlReader.Create(this.rssFeed.BaseUri.ToString());
                 var feed = SyndicationFeed.Load(reader);
                 return feed.Items;
             }

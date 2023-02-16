@@ -3,6 +3,7 @@ using NewsService.Data;
 using NewsService.Jobs;
 using NewsService.Services;
 using Quartz;
+using System.ServiceModel.Syndication;
 
 namespace NewsService
 {
@@ -25,22 +26,40 @@ namespace NewsService
             builder.Services.AddQuartz(q =>
             {
                 q.UseMicrosoftDependencyInjectionJobFactory();
-                q.AddJob<FetchMarcaEnRssFeedJob>(opts => opts.WithIdentity("FetchMarcaEn"));
-                q.AddJob<FetchEspnFootballRssFeed>(opts => opts.WithIdentity("FetchEspn"));
+                q.AddJob<FetchRssFeedJob>(opts => opts.WithIdentity("FetchRssFeed"));
 
+                JobDataMap espnDataMap = (new JobDataMap());
+                espnDataMap.Put("feed",new SyndicationFeed()
+                {
+                    Title = new TextSyndicationContent("ESPN"),
+                    BaseUri = new Uri("https://www.espn.com/espn/rss/soccer/news")
+                }); 
+                
+                JobDataMap dailyMailDataMap = (new JobDataMap());
+                dailyMailDataMap.Put("feed",new SyndicationFeed()
+                {
+                    Title = new TextSyndicationContent("Daily Mail Sports"),
+                    BaseUri = new Uri("https://www.dailymail.co.uk/sport/index.rss")
+                }); 
+                
                 q.AddTrigger(opts => opts
-                    .ForJob("FetchMarcaEn")
-                    .WithIdentity("FetchMarcaEn-trigger")
+                    .ForJob("FetchRssFeed")
+                    .WithIdentity("FetchEspn-trigger")
+                    .UsingJobData(espnDataMap)
                     .WithSimpleSchedule(
                         x => x.WithIntervalInMinutes(30)
                     )
                     ); 
+                
                 q.AddTrigger(opts => opts
-                    .ForJob("FetchEspn")
-                    .WithIdentity("FetchEspn-trigger")
+                    .ForJob("FetchRssFeed")
+                    .WithIdentity("FetchDailyMail-trigger")
+                    .UsingJobData(dailyMailDataMap)
                     .WithSimpleSchedule(
                         x => x.WithIntervalInMinutes(30)
-                    ));
+                    )
+                    ); 
+               
             });
 
             // ASP.NET Core hosting
