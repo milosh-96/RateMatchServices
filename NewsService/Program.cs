@@ -40,6 +40,12 @@ namespace NewsService
                 {
                     Title = new TextSyndicationContent("Daily Mail Sports"),
                     BaseUri = new Uri("https://www.dailymail.co.uk/sport/index.rss")
+                });
+                JobDataMap mlbDataMap = (new JobDataMap());
+                mlbDataMap.Put("feed",new SyndicationFeed()
+                {
+                    Title = new TextSyndicationContent("MLB.com"),
+                    BaseUri = new Uri("https://www.mlb.com/feeds/news/rss.xml")
                 }); 
                 
                 q.AddTrigger(opts => opts
@@ -55,6 +61,14 @@ namespace NewsService
                     .ForJob("FetchRssFeed")
                     .WithIdentity("FetchDailyMail-trigger")
                     .UsingJobData(dailyMailDataMap)
+                    .WithSimpleSchedule(
+                        x => x.WithIntervalInMinutes(30)
+                    )
+                    ); 
+                q.AddTrigger(opts => opts
+                    .ForJob("FetchRssFeed")
+                    .WithIdentity("MlbCom-trigger")
+                    .UsingJobData(mlbDataMap)
                     .WithSimpleSchedule(
                         x => x.WithIntervalInMinutes(30)
                     )
