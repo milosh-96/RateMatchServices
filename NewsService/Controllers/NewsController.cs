@@ -18,7 +18,7 @@ namespace NewsService.Controllers
         [HttpGet("/")]
         public IActionResult Get()
         {
-            return new JsonResult(_dbContext.Articles.OrderByDescending(x=>x.PublishedAt).ToList());
+            return new JsonResult(_dbContext.Articles.OrderByDescending(x=>x.PublishedAt).Take(100).ToList());
         }
     }
 }

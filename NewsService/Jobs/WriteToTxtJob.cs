@@ -5,16 +5,10 @@ namespace NewsService.Jobs
 {
     public class WriteToTxtJob : IJob
     {
-        private readonly IRssReadingService _readingService;
-
-        public WriteToTxtJob(IRssReadingService readingService)
-        {
-            _readingService = readingService;
-        }
-
+      
         public Task Execute(IJobExecutionContext context)
         {
-            System.IO.File.WriteAllLines("test.txt", _readingService.GetAll().Select(x=>x.Title.Text).ToList());
+            File.WriteAllText("./test.txt",DateTime.Now.ToLongTimeString());
             return Task.FromResult(true);
         }
     }

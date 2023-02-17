@@ -4,12 +4,13 @@ using NewsService.Jobs;
 using NewsService.Services;
 using Quartz;
 using System.ServiceModel.Syndication;
+using static Quartz.Logging.OperationName;
 
 namespace NewsService
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ namespace NewsService
             {
                 q.UseMicrosoftDependencyInjectionJobFactory();
                 q.AddJob<FetchRssFeedJob>(opts => opts.WithIdentity("FetchRssFeed"));
+                //q.AddJob<WriteToTxtJob>(opts => opts.WithIdentity("WriteTxt","Jobs"));
 
                 JobDataMap espnDataMap = (new JobDataMap());
                 espnDataMap.Put("feed",new SyndicationFeed()
@@ -53,7 +55,7 @@ namespace NewsService
                     .WithIdentity("FetchEspn-trigger")
                     .UsingJobData(espnDataMap)
                     .WithSimpleSchedule(
-                        x => x.WithIntervalInMinutes(30)
+                        x => x.WithInterval(TimeSpan.FromMinutes(30)).RepeatForever()
                     )
                     ); 
                 
@@ -62,26 +64,37 @@ namespace NewsService
                     .WithIdentity("FetchDailyMail-trigger")
                     .UsingJobData(dailyMailDataMap)
                     .WithSimpleSchedule(
-                        x => x.WithIntervalInMinutes(30)
+                        x => x.WithInterval(TimeSpan.FromMinutes(30)).RepeatForever()
                     )
-                    ); 
+                    );
                 q.AddTrigger(opts => opts
                     .ForJob("FetchRssFeed")
                     .WithIdentity("MlbCom-trigger")
                     .UsingJobData(mlbDataMap)
                     .WithSimpleSchedule(
-                        x => x.WithIntervalInMinutes(30)
+                        x => x.WithInterval(TimeSpan.FromMinutes(30))
+                        .RepeatForever()
                     )
-                    ); 
-               
+                    );
+
+                //q.AddTrigger(opts => opts.WithIdentity("WriteTxtTrigger", "JobTriggers")
+                //.ForJob("WriteTxt", "Jobs")
+                //.WithSimpleSchedule(x =>
+                //{
+                //    x.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever();
+                //}
+                //)
+                //);
+
             });
 
+
+          
+            builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
             // ASP.NET Core hosting
-            builder.Services.AddQuartzServer(options =>
-            {
-                // when shutting down we want jobs to complete gracefully
-                options.WaitForJobsToComplete = true;
-            });
+         
+
+
 
             //Custom Services //
 
@@ -102,6 +115,8 @@ namespace NewsService
 
 
             app.MapControllers();
+
+            
 
             app.Run();
         }

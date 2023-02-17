@@ -57,6 +57,16 @@ namespace NewsService.Jobs
                 dbContext.Articles.AddRange(toAdd);
                 dbContext.SaveChanges();
             }
+            File.AppendAllText("./test.txt", 
+                "Fetched " 
+                + feed.Title.Text 
+                + "@ " 
+                +  DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                + "and inserted " + toAdd.Count + " items."
+                + Environment.NewLine
+
+                );
+
             return Task.FromResult(true);
         }
     }
