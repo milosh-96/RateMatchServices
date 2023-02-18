@@ -25,7 +25,7 @@ namespace NewsService.Jobs
             using var dbContext = _dbContextFactory.CreateDbContext();
             rssReadingService.SetRssFeed(feed);
             var items = rssReadingService.GetAll();
-            var toAdd = new List<NewsArticle>();
+            var toAdd = new List<ExternalContentLink>();
             items.ToList().ForEach(x =>
             {
                 try
@@ -33,16 +33,16 @@ namespace NewsService.Jobs
                     var link = "https://r8match.com";
                     
                         link = x.Links.Where(x=>x.MediaType==null).FirstOrDefault().Uri.ToString();
-                    if (!dbContext.Articles.Any(y => y.Title == x.Title.Text.ToString()
-                     && y.ArticleLink == link))
+                    if (!dbContext.ExternalContentLinks.Any(y => y.Title == x.Title.Text.ToString()
+                     && y.ExternalUrl == link))
                     {
                         toAdd.Add(
-                       new NewsArticle()
+                       new ExternalContentLink()
                        {
                            Source = feed.Title.Text,
                            Title = x.Title.Text,
-                           PublishedAt = x.PublishDate.DateTime.ToUniversalTime(),
-                           ArticleLink = link
+                           CreatedAt = x.PublishDate.DateTime.ToUniversalTime(),
+                           ExternalUrl = link
                        }
                        );
                     }
@@ -54,7 +54,7 @@ namespace NewsService.Jobs
             });
             if (toAdd.Count > 0)
             {
-                dbContext.Articles.AddRange(toAdd);
+                dbContext.ExternalContentLinks.AddRange(toAdd);
                 dbContext.SaveChanges();
             }
             File.AppendAllText("./test.txt", 

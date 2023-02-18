@@ -30,52 +30,22 @@ namespace NewsService
                 q.AddJob<FetchRssFeedJob>(opts => opts.WithIdentity("FetchRssFeed"));
                 //q.AddJob<WriteToTxtJob>(opts => opts.WithIdentity("WriteTxt","Jobs"));
 
-                JobDataMap espnDataMap = (new JobDataMap());
-                espnDataMap.Put("feed",new SyndicationFeed()
+                foreach (var item in NewsSources.Get())
                 {
-                    Title = new TextSyndicationContent("ESPN"),
-                    BaseUri = new Uri("https://www.espn.com/espn/rss/soccer/news")
-                }); 
-                
-                JobDataMap dailyMailDataMap = (new JobDataMap());
-                dailyMailDataMap.Put("feed",new SyndicationFeed()
-                {
-                    Title = new TextSyndicationContent("Daily Mail Sports"),
-                    BaseUri = new Uri("https://www.dailymail.co.uk/sport/index.rss")
-                });
-                JobDataMap mlbDataMap = (new JobDataMap());
-                mlbDataMap.Put("feed",new SyndicationFeed()
-                {
-                    Title = new TextSyndicationContent("MLB.com"),
-                    BaseUri = new Uri("https://www.mlb.com/feeds/news/rss.xml")
-                }); 
-                
-                q.AddTrigger(opts => opts
-                    .ForJob("FetchRssFeed")
-                    .WithIdentity("FetchEspn-trigger")
-                    .UsingJobData(espnDataMap)
-                    .WithSimpleSchedule(
-                        x => x.WithInterval(TimeSpan.FromMinutes(30)).RepeatForever()
-                    )
-                    ); 
-                
-                q.AddTrigger(opts => opts
-                    .ForJob("FetchRssFeed")
-                    .WithIdentity("FetchDailyMail-trigger")
-                    .UsingJobData(dailyMailDataMap)
-                    .WithSimpleSchedule(
-                        x => x.WithInterval(TimeSpan.FromMinutes(30)).RepeatForever()
-                    )
-                    );
-                q.AddTrigger(opts => opts
-                    .ForJob("FetchRssFeed")
-                    .WithIdentity("MlbCom-trigger")
-                    .UsingJobData(mlbDataMap)
-                    .WithSimpleSchedule(
-                        x => x.WithInterval(TimeSpan.FromMinutes(30))
-                        .RepeatForever()
-                    )
-                    );
+                    JobDataMap dataMap = (new JobDataMap());
+                    dataMap.Put("feed", item);
+
+                    q.AddTrigger(opts => opts
+                        .ForJob("FetchRssFeed")
+                        .WithIdentity("Fetch"+item.Title.Text+"-trigger")
+                        .UsingJobData(dataMap)
+                        .WithSimpleSchedule(
+                            x => x.WithInterval(TimeSpan.FromMinutes(30)).RepeatForever()
+                        )
+                        );
+                }
+               
+              
 
                 //q.AddTrigger(opts => opts.WithIdentity("WriteTxtTrigger", "JobTriggers")
                 //.ForJob("WriteTxt", "Jobs")

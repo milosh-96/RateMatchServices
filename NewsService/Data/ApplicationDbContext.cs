@@ -9,10 +9,8 @@ namespace NewsService.Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<NewsArticle>()
-                .HasIndex(n => new { n.Title,n.PublishedAt,n.Source,n.ArticleLink})
-                .IsUnique();
+           
         }
-        public DbSet<NewsArticle> Articles => Set<NewsArticle>();
+        public DbSet<ExternalContentLink> ExternalContentLinks => Set<ExternalContentLink>();
     }
 }

@@ -1,3 +1,11 @@
 Fetched MLB.com@ 2023-02-17 03:54:10and inserted 0 items.
 Fetched ESPN@ 2023-02-17 03:54:10and inserted 1 items.
 Fetched Daily Mail Sports@ 2023-02-17 03:54:15and inserted 0 items.
+Fetched MLB.com@ 2023-02-18 00:55:30and inserted 25 items.
+Fetched Daily Mail Sports@ 2023-02-18 00:56:14and inserted 150 items.
+Fetched ESPN@ 2023-02-18 01:10:38and inserted 0 items.
+Fetched MLB.com@ 2023-02-18 01:10:38and inserted 0 items.
+Fetched Daily Mail Sports@ 2023-02-18 01:10:43and inserted 0 items.
+Fetched MLB.com@ 2023-02-18 01:15:54and inserted 1 items.
+Fetched 90min.com@ 2023-02-18 01:16:01and inserted 90 items.
+Fetched Daily Mail Sports@ 2023-02-18 01:16:03and inserted 1 items.
