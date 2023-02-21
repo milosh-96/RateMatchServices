@@ -16,6 +16,21 @@ namespace NewsService.Data
                 {
                     Title=new TextSyndicationContent("Daily Mail Sports"),
                     BaseUri=new Uri("https://www.dailymail.co.uk/sport/index.rss")
+                }, 
+                new SyndicationFeed()
+                {
+                    Title=new TextSyndicationContent("Yahoo! Sports"),
+                    BaseUri=new Uri("https://sports.yahoo.com/rss/")
+                },
+                new SyndicationFeed()
+                {
+                    Title=new TextSyndicationContent("Tribal Football"),
+                    BaseUri=new Uri("https://www.tribalfootball.com/rss/mediafed/general/rss.xml")
+                },
+                new SyndicationFeed()
+                {
+                    Title=new TextSyndicationContent("FootballCritic"),
+                    BaseUri=new Uri("https://www.footballcritic.com/rss/")
                 },
                 new SyndicationFeed()
                 {
